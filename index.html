@@ -75,6 +75,17 @@
             0% { transform: translateY(0); }
             100% { transform: translateY(100vh); }
         }
+
+        /* Responsividade para telas menores */
+        @media (max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+            button {
+                font-size: 16px;
+                padding: 8px 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -82,7 +93,7 @@
     <h1>Feliz Dia da Mulher!🩷</h1>
     <p>Se acertar o botão, ganha uma surpresa!</p>
 
-    <button id="trickButton">Clique Aqui</button>
+    <button id="trickButton" aria-label="Clique para ganhar uma surpresa">Clique Aqui</button>
 
     <div id="surprise" class="hidden">
         <img src="images.jpeg" alt="Imagem Romântica">
@@ -96,6 +107,7 @@
         let audio = document.getElementById("loveSong");
         let surprise = document.getElementById("surprise");
         let attempts = 0;
+        let isMoving = false;
 
         // Mantendo 30 tentativas para ambos (PC e celular)
         let maxAttempts = 25;
@@ -114,7 +126,7 @@
         }
 
         function moveButton() {
-            if (attempts >= maxAttempts) return;
+            if (!isMoving || attempts >= maxAttempts) return;
             if (navigator.vibrate) navigator.vibrate(100);
             let screenWidth = window.innerWidth;
             let screenHeight = window.innerHeight;
@@ -145,8 +157,7 @@
         }
 
         centerButton();
-        setInterval(moveButton, moveInterval);  // O botão agora se move a cada 300ms
-
+        // O botão não vai se mover até ser clicado
         button.addEventListener("click", function() {
             if (attempts >= maxAttempts) {
                 button.style.display = "none";
@@ -154,6 +165,9 @@
                 setTimeout(() => surprise.classList.add("show"), 10);
                 audio.play();
                 createConfetti();
+            } else {
+                isMoving = true;  // Inicia o movimento do botão após o clique
+                setInterval(moveButton, moveInterval);  // O botão agora se move a cada 300ms após o clique
             }
         });
 
@@ -162,4 +176,3 @@
 
 </body>
 </html>
-
